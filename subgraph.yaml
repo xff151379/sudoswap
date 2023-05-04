@@ -1,0 +1,89 @@
+specVersion: 0.0.5
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: LSSVMPairFactory
+    network: mainnet
+    source:
+      address: "0xb16c1342E617A5B6E4b631EB114483FDB289c0A4"
+      abi: LSSVMPairFactory
+      startBlock: 14652260
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - NewPair
+      abis:
+        - name: LSSVMPairFactory
+          file: ./abis/LSSVMPairFactory.json
+      eventHandlers:
+        - event: NewPair(address)
+          handler: handleNewPairEvent
+      callHandlers:
+        - function: createPairETH(address,address,address,uint8,uint128,uint96,uint128,uint256[])
+          handler: handleCreatePairETH
+      file: ./src/lssvm-pair-factory.ts
+  - kind: ethereum
+    name: LSSVMRouter
+    network: mainnet
+    source:
+      address: "0x2b2e8cda09bba9660dca5cb6233787738ad68329"
+      abi: LSSVMRouter
+      startBlock: 14652259
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Trade
+      abis:
+        - name: LSSVMRouter
+          file: ./abis/LSSVMRouter.json
+      callHandlers:
+        - function: robustSwapETHForSpecificNFTs(((address,uint256[]),uint256)[],address,address,uint256)
+          handler: handleRobustSwapETHForSpecificNFTs   
+        - function: swapETHForSpecificNFTs((address,uint256[])[],address,address,uint256)
+          handler: handleSwapETHForSpecificNFTs  
+        - function: swapNFTsForToken((address,uint256[])[],uint256,address,uint256)
+          handler: handleSwapNFTsForToken
+        - function: robustSwapNFTsForToken(((address,uint256[]),uint256)[],address,uint256)
+          handler: handleRobustSwapNFTsForToken
+      file: ./src/lssvm-router.ts
+templates:
+  - kind: ethereum
+    name: LSSVMPairEnumerableETH
+    network: mainnet
+    source:
+      abi: LSSVMPairEnumerableETH
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - SpotPriceUpdate
+        - SwapNFTInPair
+        - SwapNFTOutPair
+        - Trade
+        - test
+      abis:
+        - name: LSSVMPairEnumerableETH
+          file: ./abis/LSSVMPairEnumerableETH.json
+        - name: MultiRouter
+          file: ./abis/MultiRouter.json
+        - name: LSSVMRouter
+          file: ./abis/LSSVMRouter.json
+      eventHandlers:
+        - event: SpotPriceUpdate(uint128)
+          handler: handleSpotPriceUpdate
+        - event: SwapNFTInPair()
+          handler: handleSwapNFTInPair
+        - event: SwapNFTOutPair()
+          handler: handleSwapNFTOutPair
+      callHandlers:
+        - function: swapTokenForSpecificNFTs(uint256[], uint256, address, bool, address)
+          handler: handleSwapTokenForSpecificNFTs
+        - function: robustSwapTokensForSpecificNFTsAndNFTsToToken((tuple[],tuple[]))
+          handler: handleRobustSwapTokensForSpecificNFTsAndNFTsToToken  
+      file: ./src/lssvm-pair-enumerable-eth.ts

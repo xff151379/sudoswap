@@ -1,0 +1,64 @@
+type Trade @entity {
+id: ID!
+buyer: String
+seller: String!
+collection: String!
+token_id: [BigInt!]!
+amount: BigInt!
+amount_usd: BigInt!
+}
+
+type test @entity {
+id: ID!
+test_amount_usd: BigInt!
+}
+
+type NewPair @entity {
+  id: ID!
+  address: String
+  owner: String
+  blockNumber: BigInt
+  createdAt: BigInt
+  updatedAt: BigInt
+  createdTx: String
+  nft: String
+  initialBondingCurveAddress: String
+  initialAssetRecipient: String
+  poolType: BigInt
+  initialDelta: BigInt
+  initialFee: BigInt
+  initialSpotPrice: BigInt!
+  initialNFTIdInventory: [BigInt!]
+  initialInventoryCount: BigInt
+  initialETHLiquidity: BigInt
+  pair: Pair @derivedFrom(field:"initialAttributes")
+}
+
+type Pair @entity {
+  id: ID!
+  owner: String
+  createdTx: String
+  createdAt: BigInt
+  updatedAt: BigInt
+  nft: String
+  bondingCurveAddress: String
+  assetRecipient: String
+  poolType: BigInt
+  delta: BigInt
+  fee: BigInt
+  spotPrice: BigInt
+  nftIdInventory: [BigInt!]
+  inventoryCount: BigInt
+  ethLiquidity: BigInt
+  initialAttributes: NewPair
+}
+
+type SpotPriceUpdate @entity {
+  id: ID!
+  newSpotPrice: BigInt! # uint128
+  updateTx: String
+  nft: String
+  pair: String
+  blockNumber: BigInt
+  timestamp: BigInt
+}
